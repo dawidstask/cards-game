@@ -1,11 +1,13 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
 import {collection, getDocs} from "firebase/firestore";
-import {db} from './../../firebase'
+import {db} from './../../firebase';
 import {People} from "../types/People.ts";
 import {Starships} from "../types/Starships.ts";
+import {useRandomType} from "../composables/useRandomType.ts";
 
 export const useStore = defineStore('store', () => {
+	const randomType = useRandomType()
 	const state = ref({
 		people: [] as People[],
 		starships: [] as Starships[],
@@ -40,7 +42,7 @@ export const useStore = defineStore('store', () => {
 			secondIndex++
 		}
 
-		const name: string = `random${type.charAt(0).toUpperCase() + type.slice(1)}`
+		const name: 'randomPeople' | 'randomStarships' = randomType.getType(type)
 		state.value[name] = [data[firstIndex], data[secondIndex]]
 	}
 
