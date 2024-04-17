@@ -3,8 +3,10 @@ import {useStore} from "./store";
 import {onMounted, ref} from "vue";
 import AppCard from "./components/AppCard.vue";
 import {useRandomType} from "./composables/useRandomType.ts";
+import AppBarChart from "./components/AppBarChart.vue";
 
 const mode = ref<'people' | 'starships'>('people')
+const showChart = ref<boolean>(false)
 const scoreCounter = ref({
 	left: 0,
 	right: 0,
@@ -28,6 +30,7 @@ const onPlay = (val: 'people' | 'starships') => {
 <template>
 	<div class="d-flex justify-center my-10">
 		<v-btn
+			v-if="!showChart"
 			class="mr-2"
 			height="50"
 			min-width="100"
@@ -36,38 +39,48 @@ const onPlay = (val: 'people' | 'starships') => {
 			PLAY: PEOPLE
 		</v-btn>
 		<v-btn
+			v-if="!showChart"
+			class="mr-2"
 			height="50"
 			min-width="100"
 			@click="onPlay('starships')"
 		>
 			PLAY: STARSHIPS
 		</v-btn>
+		<v-btn
+			height="50"
+			min-width="100"
+			@click="showChart = !showChart"
+		>
+			{{ showChart ? 'Hide chart' : 'Show chart' }}
+		</v-btn>
 	</div>
-	<template v-if="mode === 'people'">
-		<div v-if="store.randomPeople?.length" class="d-flex justify-space-around">
-			<div>
-				<span>SCORE: {{ scoreCounter.left }}</span>
-				<AppCard
-					:name="store.randomPeople[0].name"
-					:surname="store.randomPeople[0].surname"
-					:data="store.randomPeople[0].mass"
-					:isWinning="store.randomPeople[0].mass > store.randomPeople[1].mass"
-					img="https://i.pinimg.com/736x/b0/ae/a3/b0aea3afb80fe80ad3d36d399f0a88fd.jpg"
-				/>
+	<template v-if="!showChart">
+		<template v-if="mode === 'people'">
+			<div v-if="store.randomPeople?.length" class="d-flex justify-space-around">
+				<div>
+					<span>SCORE: {{ scoreCounter.left }}</span>
+					<AppCard
+						:name="store.randomPeople[0].name"
+						:surname="store.randomPeople[0].surname"
+						:data="store.randomPeople[0].mass"
+						:isWinning="store.randomPeople[0].mass > store.randomPeople[1].mass"
+						img="https://i.pinimg.com/736x/b0/ae/a3/b0aea3afb80fe80ad3d36d399f0a88fd.jpg"
+					/>
+				</div>
+				<div>
+					<span>SCORE: {{ scoreCounter.right }}</span>
+					<AppCard
+						:name="store.randomPeople[1].name"
+						:surname="store.randomPeople[1].surname"
+						:data="store.randomPeople[1].mass"
+						:isWinning="store.randomPeople[1].mass > store.randomPeople[0].mass"
+						img="https://cdn4.sharechat.com/WhatsAppprofiledpboys_cf1878a_1658641411937_sc_cmprsd_75.jpg"
+					/>
+				</div>
 			</div>
-			<div>
-				<span>SCORE: {{ scoreCounter.right }}</span>
-				<AppCard
-					:name="store.randomPeople[1].name"
-					:surname="store.randomPeople[1].surname"
-					:data="store.randomPeople[1].mass"
-					:isWinning="store.randomPeople[1].mass > store.randomPeople[0].mass"
-					img="https://cdn4.sharechat.com/WhatsAppprofiledpboys_cf1878a_1658641411937_sc_cmprsd_75.jpg"
-				/>
-			</div>
-		</div>
-	</template>
-	<template v-else>
+		</template>
+		<template v-else>
 		<div v-if="store.randomStarships?.length" class="d-flex justify-space-around">
 			<div>
 				<span>SCORE: {{ scoreCounter.left }}</span>
@@ -89,6 +102,8 @@ const onPlay = (val: 'people' | 'starships') => {
 			</div>
 		</div>
 	</template>
+	</template>
+	<AppBarChart v-if="showChart" :props-data="[scoreCounter.left, scoreCounter.right]" />
 </template>
 
 <style scoped>
