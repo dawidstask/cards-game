@@ -5,9 +5,11 @@ import {db} from './../../firebase';
 import {People} from "../types/People.ts";
 import {Starships} from "../types/Starships.ts";
 import {useRandomType} from "../composables/useRandomType.ts";
+import {useRandomElements} from "../composables/useRandomElements.ts";
 
 export const useStore = defineStore('store', () => {
 	const randomType = useRandomType()
+	const randomElements = useRandomElements()
 	const state = ref({
 		people: [] as People[],
 		starships: [] as Starships[],
@@ -27,29 +29,19 @@ export const useStore = defineStore('store', () => {
 		starshipsQuerySnapshot.forEach((doc) => {
 			state.value.starships.push({ id: doc.id, ...doc.data() as Omit<Starships, 'id'> })
 		});
+		console.log(state.value)
 	}
 
-	const generateTwoDifferentRandomElements = (type: 'people' | 'starships'): void => {
+	const getElements = (type: 'people' | 'starships'): void => {
 		const data: Array<People | Starships> = state.value[type]
-		if (data.length < 2) {
-			console.error('Amount of data should be greater than 2')
-			return
-		}
-
-		let firstIndex: number = Math.floor(Math.random() * data.length)
-		let secondIndex: number = Math.floor(Math.random() * (data.length - 1))
-		if (secondIndex >= firstIndex) {
-			secondIndex++
-		}
-
 		const name: 'randomPeople' | 'randomStarships' = randomType.getType(type)
-		state.value[name] = [data[firstIndex], data[secondIndex]]
+		state.value[name] = randomElements.generate(data)
 	}
 
 	return {
 		getPeople,
 		getStarships,
-		generateTwoDifferentRandomElements,
+		getElements,
 		people: computed(() => state.value.people),
 		randomPeople: computed(() => state.value.randomPeople),
 		starships: computed(() => state.value.starships),

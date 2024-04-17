@@ -20,7 +20,7 @@ onMounted(async () => {
 const setMode = (val: 'people' | 'starships') => mode.value = val
 const onPlay = (val: 'people' | 'starships') => {
 	setMode(val)
-	store.generateTwoDifferentRandomElements(mode.value)
+	store.getElements(mode.value)
 	const name: 'randomPeople' | 'randomStarships' = randomType.getType(mode.value)
 	const compare: 'mass' | 'crew' = mode.value === 'people' ? 'mass' : 'crew'
 	store[name][0][compare] > store[name][1][compare] ? scoreCounter.value.left++ : scoreCounter.value.right++
