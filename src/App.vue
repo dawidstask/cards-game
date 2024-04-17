@@ -35,31 +35,35 @@ const onPlay = (val: 'people' | 'starships') => {
 		</v-btn>
 	</div>
 	<template v-if="mode === 'people'">
-		<div v-if="store.randomPeople?.length" class="d-flex">
+		<div v-if="store.randomPeople?.length" class="d-flex justify-space-around">
 			<AppCard
 				:name="store.randomPeople[0].name"
 				:surname="store.randomPeople[0].surname"
 				:data="store.randomPeople[0].mass"
+				:isWinning="store.randomPeople[0].mass > store.randomPeople[1].mass"
 				img="https://i.pinimg.com/736x/b0/ae/a3/b0aea3afb80fe80ad3d36d399f0a88fd.jpg"
 			/>
 			<AppCard
 				:name="store.randomPeople[1].name"
 				:surname="store.randomPeople[1].surname"
 				:data="store.randomPeople[1].mass"
+				:isWinning="store.randomPeople[1].mass > store.randomPeople[0].mass"
 				img="https://cdn4.sharechat.com/WhatsAppprofiledpboys_cf1878a_1658641411937_sc_cmprsd_75.jpg"
 			/>
 		</div>
 	</template>
 	<template v-else>
-		<div v-if="store.randomStarships?.length" class="d-flex">
+		<div v-if="store.randomStarships?.length" class="d-flex justify-space-around">
 			<AppCard
 				:name="store.randomStarships[0].name"
 				:data="store.randomStarships[0].crew"
+				:isWinning="store.randomStarships[0].crew > store.randomStarships[1].crew"
 				img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYZKC-lTUh5IrJ1QS_m7icuIADmDAxm_tTjA&s"
 			/>
 			<AppCard
 				:name="store.randomStarships[1].name"
 				:data="store.randomStarships[1].crew"
+				:isWinning="store.randomStarships[1].crew > store.randomStarships[0].crew"
 				img="https://www.tesmanian.com/cdn/shop/articles/aej8qqnumnk41.jpg?v=1585455824&width=500"
 			/>
 		</div>
